@@ -3,6 +3,8 @@ variable "project_id" {
   type        = string
 }
 
+## Apigee Organization
+
 variable "display_name" {
   description = "The display name for the Apigee organization."
   type        = string
@@ -43,4 +45,31 @@ variable "runtime_database_encryption_key_name" {
   description = "CloudKMS key name to use in encrypting the data stored in the runtime instances. Update is not allowed after the organization is created. If not specified, a Google-Managed encryption key will be used."
   type        = string
   default     = null
+}
+
+## Apigee Environments
+
+variable "apigee_environments" {
+  description = "The name for the environment."
+  type        = set(string)
+}
+
+variable "environment_groups" {
+  description = "Groups to collect the several environments."
+  type = map(object({
+    environments = set(string)
+    hostnames    = set(string)
+    }
+  ))
+}
+
+variable "apigee_instances" {
+  description = "The instances for Apigee runtime."
+  type = map(object({
+    location                 = string
+    ip_range                 = optional(string)
+    disk_encryption_key_name = optional(string)
+    consumer_accept_list     = optional(set(string))
+    environments             = set(string)
+  }))
 }

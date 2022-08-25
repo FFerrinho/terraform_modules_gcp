@@ -1,9 +1,9 @@
-resource "google_project_service" "project" {
+resource "google_project_service" "gcp_api" {
   project = var.project_id
   service = "apigee.googleapis.com"
 }
 
-resource "google_apigee_organization" "apigee_org" {
+resource "google_apigee_organization" "org" {
   project_id                           = var.project_id
   display_name                         = var.display_name
   description                          = var.description
@@ -18,6 +18,37 @@ resource "google_apigee_organization" "apigee_org" {
   }
 }
 
-resource "" "name" {
-  
+resource "google_apigee_environment" "apigee_env" {
+  for_each = toset(var.apigee_environments)
+  org_id   = google_apigee_organization.org.id
+  name     = each.key
+}
+
+resource "google_apigee_envgroup" "apigee_envgroup" {
+  for_each  = var.environment_groups
+  org_id    = google_apigee_organization.org.id
+  name      = each.key
+  hostnames = each.value.hostnames
+}
+
+resource "google_apigee_envgroup_attachment" "env_to_envgroup_attachment" {
+  for_each    = { for pair in local.env_envgroup_pairs : "${pair.envgroup}-${pair.env}" => pair }
+  envgroup_id = google_apigee_envgroup.apigee_envgroup[each.value.envgroup].id
+  environment = google_apigee_environment.apigee_env[each.value.env].name
+}
+
+resource "google_apigee_instance" "apigee_instance" {
+  for_each                 = var.apigee_instances
+  org_id                   = google_apigee_organization.org.id
+  name                     = each.key
+  location                 = each.value.location
+  ip_range                 = each.value.ip_range
+  disk_encryption_key_name = each.value.disk_encryption_key_name
+  consumer_accept_list     = each.value.consumer_accept_list
+}
+
+resource "google_apigee_instance_attachment" "apigee_instance_attachment" {
+  for_each    = { for env, environment in local.instance_env_attach : env => environment}
+  instance_id = google_apigee_instance.apigee_instance[each.value.instance].id
+  environment = google_apigee_environment.apigee_env[each.value.environment].name
 }
