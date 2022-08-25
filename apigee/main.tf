@@ -48,7 +48,23 @@ resource "google_apigee_instance" "apigee_instance" {
 }
 
 resource "google_apigee_instance_attachment" "apigee_instance_attachment" {
-  for_each    = { for env, environment in local.instance_env_attach : env => environment}
-  instance_id = google_apigee_instance.apigee_instance[each.value.instance].id
-  environment = google_apigee_environment.apigee_env[each.value.environment].name
+  for_each    = var.apigee_instances
+  instance_id = google_apigee_instance.apigee_instance[each.key].id
+  environment = each.value.environments
+}
+
+data "google_iam_policy" "admin" {
+  binding {
+    role = "roles/viewer"
+    members = [
+      "user:francisco.ferrinho@avast.com",
+    ]
+  }
+}
+
+resource "google_apigee_environment_iam_policy" "policy" {
+  for_each    = toset(var.apigee_environments)
+  org_id      = google_apigee_organization.org.id
+  env_id      = google_apigee_environment.apigee_env[each.key].id
+  policy_data = data.google_iam_policy.admin.policy_data
 }

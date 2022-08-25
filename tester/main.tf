@@ -36,11 +36,11 @@ module "apigee_x" {
   apigee_instances = {
     "europe" = {
       location     = "europe-west-1"
-      environments = ["dev1", "dev2"]
+      environments = "dev1"
     }
     "us" = {
       location     = "europe-west-1"
-      environments = ["stg1", "stg2"]
+      environments = "stg1"
     }
   }
 }

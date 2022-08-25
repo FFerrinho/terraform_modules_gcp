@@ -7,10 +7,4 @@ locals {
       }
     ]
   ])
-
-  instance_env_attach = flatten([
-    for instance_key, environments in var.apigee_instances : [
-        for environment_key, env in 
-    ]
-  ])
 }

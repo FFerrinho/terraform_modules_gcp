@@ -70,6 +70,6 @@ variable "apigee_instances" {
     ip_range                 = optional(string)
     disk_encryption_key_name = optional(string)
     consumer_accept_list     = optional(set(string))
-    environments             = set(string)
+    environments             = string
   }))
 }
