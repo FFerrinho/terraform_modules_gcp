@@ -1,14 +1,31 @@
-# Prerequisites
 
-## Enable apis
+# Apigee information
+
+## Definitions
+------------------------------------
+**Organization**
+: An organization is a logical unit, that contains within all the resources for an Apigee deployment. Namely environments, environment groups, and runtime instances. The organization is global and the only setting of it that is localized on a given region is the hosting for the analytics data.
+
+**Environments**
+: These are not limited to the use as the usual development, quality assurance, staging, etc. The Google Apigee examples refer to environments as application wise, like payments_dev, catalog_dev, etcetera. Hence why organizations can have up to 30 environments associated.
+
+**Environment groups**
+: These allow to group the several environments in dedicated groups, hence 'simulating' the wrapping as for example 'development'. These can then have hostnames assigned, so all associated environments will be reachable via the same hostname.
+
+**Runtime instances**
+: These are the actual workers than will respond to the API calls. They can have several environments attached to them and can be set on several regions.
+
+## Prerequisites
+
+### Enabled apis
+
 - Apigee API
 - Compute Engine API
 - Service Networking API
 
-## Logical organization
-The current license allows for two organizations with 10 environments each. The Avast team requested to have one organization for EU and another for US, but in my opinion, unless there is indeed a different set of APIs for each zone, it will only created additional complexity without real benefit. The suggested use would be one organization for a testing like environment, were teams can test things pertaining Apigee itself and/or the APIs, and then another organization for the actual workload, with multiple environments (test, dev, qa, stg and prod for example).
-The proposed architecture will comprise of a global load balancer, which will receive requests near the costumer/partner and then work in the internal Google network, on which the latency will be highly reduced and thus will little to no expected impact on the end use of the API.
+### Assembling the infrastructure
 
-## Network
-- Dedicated VPC?
-- 
+Since the organization is a global logical container, unless there are legal constraints regarding the hosting of the analytics data.
+### Network
+
+- Dedicated VPC? 
