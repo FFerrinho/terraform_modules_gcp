@@ -25,7 +25,19 @@
 
 ### Assembling the infrastructure
 
-Since the organization is a global logical container, unless there are legal constraints regarding the hosting of the analytics data.
+Since the organization is a global logical container, unless there are legal constraints regarding the hosting of the analytics data it is possible to have a multi-regional deployment, with the recourse to instances in different regions (e.g.: one in a European region and another in a North America region).
+
+### Example workflow
+![Google example for Apigee](https://cloud.google.com/static/apigee/docs/api-platform/images/apigee-arch-diagrams/apigee-arch-a.png)
+
+
 ### Network
 
-- Dedicated VPC? 
+#### Virtual Private Network
+
+- If we deploy Apigee on it's own project, the network part can be managed by Google, otherwise, we can select to manage it.
+- In this case we need to allocate the CIDR.
+
+#### Load balancer
+
+Ideally there will be two layers of load balancers. One global to receive all the external requests and how many internal load balancers to route traffic to any of the environment groups.
