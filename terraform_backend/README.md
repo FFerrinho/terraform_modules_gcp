@@ -5,6 +5,7 @@ This module will create the basic resources to host Terraform state in a Google 
 ## Prerequistes
 
 You need to ensure that at the project level the storage API was enabled. This can be enabled with the following Gcloud command:
+
 ```bash
 gcloud services enable storage.googleapis.com
 ```
