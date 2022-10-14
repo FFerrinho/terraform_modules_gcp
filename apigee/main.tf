@@ -1,4 +1,4 @@
-resource "google_project_service" "gcp_api" {
+resource "google_project_service" "apigee_api" {
   project = var.project_id
   service = "apigee.googleapis.com"
 }
@@ -57,7 +57,7 @@ data "google_iam_policy" "admin" {
   binding {
     role = "roles/viewer"
     members = [
-      "user:francisco.ferrinho@avast.com",
+      "user:YOUR_USER",
     ]
   }
 }

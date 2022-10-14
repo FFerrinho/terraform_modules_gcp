@@ -1,5 +1,5 @@
 #!/bin/bash
-PROJECT_ID="tppp-l4test1-prj-one-ab"
+PROJECT_ID="YOUR_PROJECT"
 RUNTIME_LOCATION="europe-west1"
 ANALYTICS_REGION="europe-west1"
 RANGE_NAME="apigee-range"

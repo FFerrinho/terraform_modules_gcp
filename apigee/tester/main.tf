@@ -1,7 +1,7 @@
 module "apigee_x" {
   source = "../"
 
-  project_id       = "xppd-l4test1-prj-zero-88"
+  project_id       = "YOUR_PROJECT"
   display_name     = "test_apigee"
   description      = "A test deployment of Apigee."
   analytics_region = "europe-west1"
