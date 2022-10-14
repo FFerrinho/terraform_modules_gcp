@@ -1,5 +1,5 @@
 module "apigee_x" {
-  source = "../apigee"
+  source = "../"
 
   project_id       = "xppd-l4test1-prj-zero-88"
   display_name     = "test_apigee"
@@ -19,7 +19,7 @@ module "apigee_x" {
         "dev2"
       ]
       hostnames = [
-        "dev.api.test.avast.com"
+        "dev.api.somedomain.com"
       ]
     }
     stg = {
@@ -28,7 +28,7 @@ module "apigee_x" {
         "stg2"
       ]
       hostnames = [
-        "stg.api.test.avast.com"
+        "stg.api.somedomain.com"
       ]
     }
   }
