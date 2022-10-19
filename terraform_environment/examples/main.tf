@@ -1,5 +1,5 @@
 module "tf_state" {
-  source = "../"
+  source = "../bucket"
 
   bucket_name     = "tf-state"
   bucket_location = "europe-west1"

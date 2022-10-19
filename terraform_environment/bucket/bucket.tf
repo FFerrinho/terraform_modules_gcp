@@ -16,7 +16,7 @@ resource "google_storage_bucket" "terraform" {
   labels                      = var.bucket_labels
   uniform_bucket_level_access = var.enable_bucket_uniform_access
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  /* lifecycle {
+    prevent_destroy = var.enable_prevent_destroy
+  } */
 }
