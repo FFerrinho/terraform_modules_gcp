@@ -12,7 +12,7 @@ variable "bucket_location" {
 variable "enable_bucket_force_destroy" {
   description = "If the bucket will force destroy even if it still contains files."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "bucket_project" {

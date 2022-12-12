@@ -4,7 +4,7 @@ This module will create the basic resources to host Terraform state in a Google 
 
 ## Prerequistes
 
-You need to ensure that at the project level the storage API was enabled. This can be enabled with the following Gcloud command:
+Besides the user that'll run Terraform, having the necessary permissions to deploy infrastructure on the project, you also need to ensure that at the project level the storage API was enabled. This can be enabled with the following Gcloud command:
 
 ```bash
 gcloud services enable storage.googleapis.com
@@ -38,7 +38,7 @@ To run this module you can call it from your project root folder. Since this is 
 
 You can check the ./examples folder for examples on how to use this module.
 
-## End Usage
+## Next steps
 
 After you execute this module, you can then place the following code in your providers.tf file, in order to use the bucket as the Terraform state backend:
 

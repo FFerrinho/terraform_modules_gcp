@@ -73,3 +73,8 @@ variable "apigee_instances" {
     environments             = string
   }))
 }
+
+variable "environment_users" {
+  description = "The users to allow access to the environment."
+  type        = set(string)
+}

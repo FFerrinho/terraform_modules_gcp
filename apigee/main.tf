@@ -1,14 +1,44 @@
-resource "google_project_service" "apigee_api" {
+resource "google_project_service" "apigee" {
   project = var.project_id
   service = "apigee.googleapis.com"
 }
 
+/* resource "google_kms_key_ring" "apigee_keyring" {
+  name     = "apigee-keyring"
+  location = var.analytics_region
+}
+
+resource "google_kms_crypto_key" "apigee_key" {
+  name            = "apigee-key"
+  key_ring        = google_kms_key_ring.apigee_keyring.id
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "google_project_service_identity" "apigee_sa" {
+  provider = google-beta
+  project  = data.google_project.apigee.project_id
+  service  = google_project_service.apigee.service
+}
+
+resource "google_kms_crypto_key_iam_binding" "apigee_sa_keyuser" {
+  crypto_key_id = google_kms_crypto_key.apigee_key.id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+
+  members = [
+    "serviceAccount:${google_project_service_identity.apigee_sa.email}",
+  ]
+} */
+
+
 resource "google_apigee_organization" "org" {
-  project_id                           = var.project_id
+  project_id                           = data.google_project.apigee.project_id
   display_name                         = var.display_name
   description                          = var.description
   analytics_region                     = var.analytics_region
-  authorized_network                   = var.authorized_network
+  authorized_network                   = data.google_compute_network.vpc.id
   runtime_type                         = var.runtime_type
   billing_type                         = var.billing_type
   runtime_database_encryption_key_name = var.runtime_database_encryption_key_name
@@ -51,15 +81,6 @@ resource "google_apigee_instance_attachment" "apigee_instance_attachment" {
   for_each    = var.apigee_instances
   instance_id = google_apigee_instance.apigee_instance[each.key].id
   environment = each.value.environments
-}
-
-data "google_iam_policy" "admin" {
-  binding {
-    role = "roles/viewer"
-    members = [
-      "user:YOUR_USER",
-    ]
-  }
 }
 
 resource "google_apigee_environment_iam_policy" "policy" {

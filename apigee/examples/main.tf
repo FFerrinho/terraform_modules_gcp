@@ -1,10 +1,12 @@
 module "apigee_x" {
   source = "../"
 
-  project_id       = "YOUR_PROJECT"
-  display_name     = "test_apigee"
-  description      = "A test deployment of Apigee."
-  analytics_region = "europe-west1"
+  project_id         = "tb-shared-apigee"
+  display_name       = "test_apigee"
+  description        = "A test deployment of Apigee."
+  authorized_network = "default"
+  analytics_region   = "europe-west1"
+  billing_type = "EVALUATION"
 
   apigee_environments = [
     "dev1",
@@ -32,6 +34,8 @@ module "apigee_x" {
       ]
     }
   }
+
+  environment_users = ["francisco.ferrinho@devoteam.com"]
 
   apigee_instances = {
     "europe" = {

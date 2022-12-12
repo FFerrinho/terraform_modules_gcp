@@ -1,4 +1,5 @@
 resource "google_service_account" "terraform" {
+  for_each     = toset(var.create_service_account ? ["sa"] : [])
   account_id   = var.account_name
   display_name = var.display_name
   description  = var.description
@@ -6,23 +7,29 @@ resource "google_service_account" "terraform" {
   project      = var.project
 }
 
-resource "google_project_iam_binding" "sa" {
-  project = var.project
-  role    = "roles/editor"
+data "google_service_account" "terraform" {
+  account_id = "terraform@${var.project}.iam.gserviceaccount.com"
+}
 
-  members = formatlist("serviceAccount:%s", google_service_account.terraform.email)
+resource "google_project_iam_binding" "sa" {
+  for_each = var.sa_permissions
+  project  = var.project
+  role     = each.value
+
+  members = formatlist("serviceAccount:%s", data.google_service_account.terraform.email)
 }
 
 resource "google_service_account_iam_binding" "sa_token_creator" {
-  service_account_id = google_service_account.terraform.name
+  service_account_id = data.google_service_account.terraform.id
   role               = "roles/iam.serviceAccountTokenCreator"
 
   members = formatlist("user:%s", var.sa_token_creators)
 }
 
 resource "google_service_account_iam_binding" "sa_user" {
-  service_account_id = google_service_account.terraform.name
+  service_account_id = data.google_service_account.terraform.id
   role               = "roles/iam.serviceAccountUser"
 
   members = formatlist("user:%s", var.sa_token_creators)
 }
+

@@ -1,0 +1,26 @@
+# Purpose
+
+This module can be used to create the service account that Terraform will impersonate to create the resources. It'll also add the necessary permissions and allow the indicated users to impersonate the account.
+
+## Prerequistes
+
+Since this is an initial module, the account that will run it needs to have IAM permissions, so it can create the service account and also manage it's roles.
+Unless you intend to be really granular with the permissions, granting an Editor role to the service account should suffice to allow Terraform to execute/deploy all necessary infrastructure.
+
+## Usage
+
+To run this module you can call it from your project root folder. Since this is a initial module, there is no state stored anywhere besides your local desktop or runner (if you're executing this module in a pipeline). So remember that any further action will need to import the state or use the GUI.
+
+## Inputs
+
+## Outputs
+
+## File list
+
+## Examples
+
+You can check the ./examples folder for examples on how to use this module.
+
+## Next steps
+
+N/A
