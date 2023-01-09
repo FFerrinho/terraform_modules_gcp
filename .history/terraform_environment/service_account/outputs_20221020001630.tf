@@ -1,0 +1,17 @@
+output "service_account_id" {
+  description = "The ID for the service account."
+  #value       = google_service_account.terraform.*.account_id
+  value = {
+    for k, id in google_service_account.terraform : k => terraform.name
+  }
+}
+
+/* output "service_account_email" {
+    description = "The e-mail for the service account."
+    value = google_service_account.terraform.*.email
+}
+
+output "service_account_fqdn" {
+  description = "The fully-qualified for the service account."
+  value = google_service_account.terraform.*.name
+} */
