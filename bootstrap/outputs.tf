@@ -1,11 +1,16 @@
 output "folder_name" {
   description = "The name for the Google folder under which Terraform services will be setup."
-  value       = google_folder.folder[*].display_name
+  value       = google_folder.folder[*].name
 }
 
 output "project_name" {
   description = "The name for the Google project under which Terraform services will be setup."
   value       = google_project.project.name
+}
+
+output "project_id" {
+  description = "The ID for the Google project under which Terraform services will be setup."
+  value       = google_project.project.project_id
 }
 
 output "project_billing_account" {
@@ -20,7 +25,7 @@ output "service_account_email" {
 
 output "service_account_user" {
   description = "The users with SA user and token creator permissions."
-  value       = [ for members in google_service_account_iam_binding.terraform : members]
+  value       = [for members in google_service_account_iam_binding.terraform : members]
 }
 
 output "tf_bucket_name" {

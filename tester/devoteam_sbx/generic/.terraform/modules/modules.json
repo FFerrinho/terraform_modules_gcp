@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"tf_service","Source":"../../../terraform_environment/service_account","Dir":"../../../terraform_environment/service_account"},{"Key":"tf_state","Source":"../../../terraform_environment/bucket","Dir":"../../../terraform_environment/bucket"}]}

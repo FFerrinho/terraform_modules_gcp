@@ -1,11 +1,11 @@
-# Will retrieve the organization information.
+# This will retrieve the organization information.
 data "google_organization" "organization" {
   domain = var.organization_domain
 }
 
 # If the organization is still 'clean' this will allow creation of the initial folder.
 resource "google_folder" "folder" {
-  count = var.create_folder ? 1 :0
+  count        = var.create_folder ? 1 : 0
   display_name = var.folder_name
   parent       = data.google_organization.organization.name
 }
@@ -20,7 +20,7 @@ data "google_active_folder" "folder" {
 /* data "google_billing_account" "billing" {
   billing_account = join("/", ["billingAccounts", var.billing_account_id])
   #display_name = var.billing_account_name
-  open         = true
+  open = true
 } */
 
 # This will allow creation of a billing subaccount, in case there is the need. Not tested due to the same permissions issue.
@@ -31,11 +31,12 @@ data "google_active_folder" "folder" {
 } */
 
 # This will create the project and associate the billing account.
-# The commented fields can be renabled after having permissions to test the code above, for the billing.
+# The commented field for the villing_account can be reenabled after having permissions to test the code above, for the billing.
 resource "google_project" "project" {
-  name            = var.project_display_name
-  project_id      = join("-", [replace(var.project_display_name, " ", "-"), random_id.random.dec])
-  folder_id       = data.google_active_folder.folder.id
+  name       = var.project_display_name
+  project_id = join("-", [replace(var.project_display_name, " ", "-"), random_id.random.dec])
+  org_id     = var.create_folder != "" ? data.google_organization.organization.id : null
+  folder_id  = var.create_folder ? local.folder_id : null
   billing_account = var.billing_account_id # If the line bellow is enabled (and working, see above), this line can be removed.
   #billing_account = var.billing_subaccount_name != "" ? data.google_billing_account.billing.id : google_billing_subaccount.billing[*].id
 

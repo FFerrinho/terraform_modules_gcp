@@ -3,54 +3,81 @@
 ## Assumptions
 
 For this guide we're assuming that some steps have already been followed, like creating the organization and deciding the structure (folders, projects, shared resources, etc.). So we're focusing on steps like preparing for IaC (with Terraform) and ensuring the base services for project creation.
-With that purpose, this module allows the creation of the top level folder
+Nevertheless, this module allows the following options:
+
+1. Create the project at the organization level;
+2. Create the project at a folder level;
+3. Create a new folder and create the project bellow it;
+4. Create a billing subaccount and use that for the project, instead of an already existing account;
+5. Add the service account at the organization or folder level, as best suited for the organization in order to allow permissions inheritance;
+6. Add users to the service account so impersonation can be used to secure IaC operations.
 
 ## Required resources
 
 In order to have a proper bootstrap and prepare the environment for use, the following actions and resources are necessary:
 
-1. Billing
-2. Project for shared resources, e.g. Terraform SA
-3. Storage for Terraform state
-4. User accounts that can use Terraform with the provided SA
+1. Billing account
+2. A user with at least the following permissions:
+    1. ```roles/editor``` at the organization level;
+    2. ```roles/billing.user``` over the billing account;
+    3. ```roles/billing.projectManager``` over the billing account;
+    4. If it's decided that a subaccount will be created for the project, the permissions ```roles/billing.creator``` is also required.
 
-## Initial steps
+## Using the module
 
-1. First we need to check the existing IAM users, service accounts and their respective permissions. This is important since you need to ensure you have the necessary permissions to execute the required actions and prepare the project. For this we can use some gcloud CLI commands:
+A quick example of the module use is the following:
 
 ``` bash
-gcloud projects get-iam-policy project_id
+module "bootstrap" {
+  source = [path to module]
+
+  organization_domain          = [company_domain]
+  billing_account_name         = [billing_account_display_name]
+  billing_account_id           = [billing_account_id]
+  project_display_name         = [project_display_name]
+  folder_name                  = [folder_name]
+  service_account_display_name = [service_account_display_name]
+  service_account_description  = [service_account_description]
+  sa_users                     = [service_account_impersonation_users]
+  bucket_name                  = [bucket_name_terraform_state]
+  bucket_location              = [bucket_location]
+}
 ```
 
-This should output something similar to this:
+There are the following possible inputs for this module (with eventual default values):
 
-``` yaml
-bindings:
-- members:
-  - serviceAccount:service-***********@compute-system.iam.gserviceaccount.com
-  role: roles/compute.serviceAgent
-- members:
-  - serviceAccount:service-***********@gcp-sa-gkenode.iam.gserviceaccount.com
-  role: roles/container.nodeServiceAgent
-- members:
-  - serviceAccount:service-***********@container-engine-robot.iam.gserviceaccount.com
-  role: roles/container.serviceAgent
-- members:
-  - serviceAccount:service-***********@containerregistry.iam.gserviceaccount.com
-  role: roles/containerregistry.ServiceAgent
-- members:
-  - serviceAccount:terraform@project_id.iam.gserviceaccount.com
-  - serviceAccount:***********@cloudservices.gserviceaccount.com
-  role: roles/editor
-- members:
-  - user:user_id@email.com
-  role: roles/owner
-- members:
-  - serviceAccount:service-***********@gcp-sa-pubsub.iam.gserviceaccount.com
-  role: roles/pubsub.serviceAgent
-- members:
-  - serviceAccount:terraform@project_id.iam.gserviceaccount.com
-  role: roles/storage.admin
-etag: BwXsf8afTpw=
-version: 1
-```
+| Input | Description | Type | Required | Default Value | Example Input |
+|-|-|-|-|-|-|
+| organization_domain | Used to retrieve the organization ID |string | ✅ | n/a | "acme.org" |
+| create_folder | Toggle to enable the folder creation. | bool | ❌ |false | n/a | |
+| folder_name | The name for the folder, where the project will be created | string | ✅ | n/a | "uber_folder" |
+| billing_account_id | Used to retrieve the billing account information | string | ✅ | n/a | "B1ED42-C568E7-5BC993-3EF7F4" |
+| billing_account_name | Used to retrieve the billing account information | string | ❌ | n/a | "grant_all_the_funds" |
+| create_billing_subaccount | Toggle to enable the creation of a billing subaccount for the project | bool | ❌ | false | false |
+| billing_subaccount_name | The display name for the billing subaccount | string | ❌ | n/a | "bottomless_pit" |
+| labels | Labels to attach to GCP resources | map(string) | ❌ | n/a | { managed = "Terraform \ purpose = "automation"} |
+| auto_create_network | If the default VPC with multiple subnets is to be created | bool | ❌ | false | n/a |
+| project_display_name | The display name for the project | string | ✅ | n/a | "awesome project" |
+| service_account_display_name | The display name for the service account | string | ✅ | n/a | "automate the world" |
+| service_account_description | The description for the service account | string | ✅ | n/a | "some random description" |
+| sa_member_roles | The roles to grant users in order to allow service account impersonation | et(string) | ❌ | ["roles/iam.serviceAccountUser", "roles/iam.serviceAccountTokenCreator"] | n/a |
+| sa_users | A list of users that'll be allowed to impersonate the service account | set(string) | ✅ | n/a | ["someone@bestcompany.biz"] |
+| bucket_name | The name for the bucket where the Terraform state will be stored | string | ✅ | "tf-state" | n/a |
+| bucket_location | The location for the bucket | string | ✅ | n/a | "europe-west1" |
+| enable_bucket_force_destroy | If the bucket can be destroyed with contents | bool | ❌ | true | n/a |
+| bucket_storage_class | The storage class for the bucket | string | ❌ | "STANDARD" | n/a |
+| enable_bucket_versioning | If versioning is enabled on the bucket | bool | ❌ | true | n/a |
+| enable_bucket_uniform_access | If uniform access is enabled on the bucket | bool | ❌ | true | n/a |
+
+Additionally, the module exports the following outputs:
+
+| Output | Description |
+|-|-|
+| folder_name | The name of the folder, if one was created |
+| project_name | The name of the project that was created |
+| project_id | The ID of the project that was created |
+| project_billing_account | The billing account associated with the project |
+| service_account_email | The e-mail of the service account |
+| service_account_user | The users with permissions to impersonate the service account |
+| tf_bucket_name | The name of the bucket for storing the Terraform state |
+| tf_bucket_self_link | The self link for the bucket |

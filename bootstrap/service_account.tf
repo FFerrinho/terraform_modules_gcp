@@ -22,6 +22,7 @@ resource "google_service_account" "terraform" {
 } */
 
 # This will grant the service account the necessary permissions at the folder level. Assuming the folder is the topmost folder in the organization, permissions will be inherited.
+# If the field above is enabled, this one can be commented, since it's redundant to have the permissions at organization and folder level.
 resource "google_folder_iam_member" "terraform" {
   member = join(":", ["serviceAccount", google_service_account.terraform.email])
   role   = "roles/editor"
