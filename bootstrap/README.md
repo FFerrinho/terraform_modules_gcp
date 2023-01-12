@@ -2,7 +2,12 @@
 
 ## Assumptions
 
-For this guide we're assuming that some steps have already been followed, like creating the organization and deciding the structure (folders, projects, shared resources, etc.). So we're focusing on steps like preparing for IaC (with Terraform) and ensuring the base services for project creation.
+For this guide we're assuming that some steps have already been followed, like creating the organization, billing and deciding the structure (folders, projects, shared resources, etc.). So we're focusing on steps like preparing for IaC (with Terraform) and ensuring the base services for project creation.
+
+## Objective
+
+The intent of this module is to be one of the initial steps on the Google Cloud setup. It will create the initial project to house the service account and bucket for Terraform state, eventually create a folder (if deemed necessary) and add the service account with ```roles/editor``` (per default, can be changed) at the organization or folder level. This is expected to be a one time action, and further cloud management operations should use different modules and store the state in the bucket provided (or their own buckets, according to the organization definitions).
+
 Nevertheless, this module allows the following options:
 
 1. Create the project at the organization level;
@@ -11,6 +16,8 @@ Nevertheless, this module allows the following options:
 4. Create a billing subaccount and use that for the project, instead of an already existing account;
 5. Add the service account at the organization or folder level, as best suited for the organization in order to allow permissions inheritance;
 6. Add users to the service account so impersonation can be used to secure IaC operations.
+
+It is not expected to manage things like organization policies , IAM and other definitions that are may be expected to be maintained or changed throughout the lifetime of the organization.
 
 ## Required resources
 
@@ -81,3 +88,32 @@ Additionally, the module exports the following outputs:
 | service_account_user | The users with permissions to impersonate the service account |
 | tf_bucket_name | The name of the bucket for storing the Terraform state |
 | tf_bucket_self_link | The self link for the bucket |
+
+### Module options
+
+There are some lines of code commented in some Terraform files, since there are multiple ways to approach the bootstrap process. These are there so we can 'enable' or change the approach for each organization.
+
+#### project.tf
+
+- Folder
+
+It is possible to create a new folder to host the project, or just use an existing one. If no value for the var.folder.name variable is provided, the project will be created at the organization level.
+Note that the Service Account assumes that a folder was created, so see bellow for the necessary changes otherwise.
+
+- Billing
+
+It is possible to create a billing subaccount. For this uncomment the respective lines ont eh project.tf file. The lines in question have comments with insructions themselves, so should be easy to identify which are necessary.
+
+#### service_account.tf
+
+- Organization
+
+If the Service account is expected to have permissions at the organization level, please edit the file to uncomment the required lines. These should be commented with instructions also.
+
+- Folder
+
+If it is defined that the service account needs permissions at the organization level and not at the folder level (redundant since it'll inherit from the organization), please comment the resource for the folder IAM.
+
+### To-Do
+
+- Explore ways to have the module decide if the service account is to have permissions at organization or folder level and implement without needing to comment/uncomment code.
