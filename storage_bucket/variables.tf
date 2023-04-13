@@ -35,7 +35,7 @@ variable "project" {
   type        = string
 
   validation {
-    condition     = can(regex("^(?=.{6,32}$)[a-z][a-z0-9-]*[a-z0-9]$", var.project))
+    condition     = can(regex("^([a-z][-a-z0-9]{6,30}[a-z0-9])$", var.project))
     error_message = "The project must be a valid project ID."
   }
 }
@@ -59,10 +59,8 @@ variable "storage_class" {
 
 variable "versioning" {
   description = "Whether to enable versioning for the bucket."
-  type        = map(string)
-  default = {
-    enabled = true
-  }
+  type        = bool
+  default     = false
 }
 
 variable "labels" {
