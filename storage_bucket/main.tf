@@ -8,8 +8,11 @@ resource "google_storage_bucket" "main" {
   project                     = var.project
   force_destroy               = var.force_destroy
   storage_class               = var.storage_class
-  versioning                  = var.versioning
   labels                      = var.labels
   uniform_bucket_level_access = var.uniform_bucket_level_access
   public_access_prevention    = var.public_access_prevention
+
+  versioning {
+    enabled = var.versioning
+  }
 }
