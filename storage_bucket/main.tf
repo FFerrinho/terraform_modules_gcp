@@ -3,7 +3,7 @@ resource "random_id" "main" {
 }
 
 resource "google_storage_bucket" "main" {
-  name                        = var.random_id == true ? "${var.name}-random_id.main.dec" : var.name
+  name                        = var.random_id == true ? "${var.name}-${random_id.main.dec}" : var.name
   location                    = var.location
   project                     = var.project
   force_destroy               = var.force_destroy
