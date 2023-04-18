@@ -87,3 +87,49 @@ variable "public_access_prevention" {
     error_message = "The public access prevention must be one of inherited or enforced."
   }
 }
+
+variable "lifecycle_rule_action_type" {
+  description = "The type for the lifecycle rule action."
+  type        = string
+  default     = "Delete"
+
+  validation {
+    condition     = can(regex("^(Delete|SetStorageClass)$", var.lifecycle_rule_action_type))
+    error_message = "The lifecycle rule action type must be one of Delete or SetStorageClass."
+  }
+}
+
+variable "lifecycle_rule_action_storage_class" {
+  description = "The storage class for the lifecycle rule action."
+  type        = string
+  default     = "NEARLINE"
+
+  validation {
+    condition     = can(regex("^(STANDARD|NEARLINE|COLDLINE|ARCHIVE)$", var.lifecycle_rule_action_storage_class))
+    error_message = "The lifecycle rule action storage class must be one of STANDARD, NEARLINE, COLDLINE, or ARCHIVE."
+  }
+}
+
+variable "lifecycle_rule_condition_age" {
+  description = "The age for the lifecycle rule condition."
+  type        = number
+  default     = 30
+}
+
+variable "lifecycle_rule_condition_created_before" {
+  description = "The created before for the lifecycle rule condition."
+  type        = string
+  default     = "2019-01-01"
+}
+
+variable "lifecycle_rule_condition_is_live" {
+  description = "The is live for the lifecycle rule condition."
+  type        = bool
+  default     = false
+}
+
+variable "lifecycle_rule_condition_num_newer_versions" {
+  description = "The number of newer versions for the lifecycle rule condition."
+  type        = number
+  default     = 1
+}
