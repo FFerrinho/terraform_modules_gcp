@@ -3,5 +3,5 @@ Assorted Terraform modules for Google Cloud Platform, built be me and mostly tes
 
 | Module | Purpose | Link |
 |-|-|-|
-| terraform-google-bucket | Manages Google Cloud Storage | https://registry.terraform.io/modules/FFerrinho/bucket/google/latest |
 | terraform-google-bootstrap | Implements the initial steps for automation in Google Cloud | https://github.com/FFerrinho/terraform-google-bootstrap |
+| terraform-google-bucket | Manages Google Cloud Storage | https://registry.terraform.io/modules/FFerrinho/bucket/google/latest |
